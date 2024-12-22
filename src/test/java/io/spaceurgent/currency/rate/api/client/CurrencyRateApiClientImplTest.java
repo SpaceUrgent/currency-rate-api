@@ -1,5 +1,7 @@
 package io.spaceurgent.currency.rate.api.client;
 
+import io.spaceurgent.currency.rate.api.client.dto.CryptoCurrencyRateInfo;
+import io.spaceurgent.currency.rate.api.client.dto.FiatCurrencyRateInfo;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -187,12 +189,12 @@ class CurrencyRateApiClientImplTest {
     }
 
     private static Predicate<FiatCurrencyRateInfo> fiatCurrencyRateEqualsPredicate(String currency, BigDecimal rate) {
-        return currencyRateInfo -> currency.equals(currencyRateInfo.getCurrency())
-                && rate.equals(currencyRateInfo.getRate());
+        return currencyRateInfo -> currency.equals(currencyRateInfo.currency())
+                && rate.equals(currencyRateInfo.rate());
     }
 
     private static Predicate<CryptoCurrencyRateInfo> cryptoCurrencyRateEqualsPredicate(String name, BigDecimal value) {
-        return currencyRateInfo -> name.equals(currencyRateInfo.getName())
-                && value.equals(currencyRateInfo.getValue());
+        return currencyRateInfo -> name.equals(currencyRateInfo.name())
+                && value.equals(currencyRateInfo.value());
     }
 }

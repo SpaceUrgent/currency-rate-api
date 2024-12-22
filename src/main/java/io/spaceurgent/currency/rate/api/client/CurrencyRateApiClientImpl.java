@@ -1,5 +1,7 @@
 package io.spaceurgent.currency.rate.api.client;
 
+import io.spaceurgent.currency.rate.api.client.dto.CryptoCurrencyRateInfo;
+import io.spaceurgent.currency.rate.api.client.dto.FiatCurrencyRateInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
