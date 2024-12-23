@@ -1,7 +1,7 @@
 package io.spaceurgent.currency.rate.api.client;
 
-import io.spaceurgent.currency.rate.api.client.dto.CryptoCurrencyRateInfo;
-import io.spaceurgent.currency.rate.api.client.dto.FiatCurrencyRateInfo;
+import io.spaceurgent.currency.rate.api.client.dto.CryptoRateInfo;
+import io.spaceurgent.currency.rate.api.client.dto.FiatRateInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -18,13 +18,13 @@ public class CurrencyRateApiClientImpl implements CurrencyRateApiClient {
     }
 
     @Override
-    public Flux<FiatCurrencyRateInfo> fetchFiatCurrencyRates() {
-        return doGet("/fiat-currency-rates", FiatCurrencyRateInfo.class);
+    public Flux<FiatRateInfo> fetchFiatCurrencyRates() {
+        return doGet("/fiat-currency-rates", FiatRateInfo.class);
     }
 
     @Override
-    public Flux<CryptoCurrencyRateInfo> fetchCryptoCurrencyRates() {
-        return doGet("/crypto-currency-rates", CryptoCurrencyRateInfo.class);
+    public Flux<CryptoRateInfo> fetchCryptoCurrencyRates() {
+        return doGet("/crypto-currency-rates", CryptoRateInfo.class);
     }
 
     private <T> Flux<T> doGet(String uri, Class<T> returnClass) {

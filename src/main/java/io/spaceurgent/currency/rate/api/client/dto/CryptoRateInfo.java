@@ -2,7 +2,7 @@ package io.spaceurgent.currency.rate.api.client.dto;
 
 import java.math.BigDecimal;
 
-public record CryptoCurrencyRateInfo(
+public record CryptoRateInfo(
         String name,
         BigDecimal value
 ) {}

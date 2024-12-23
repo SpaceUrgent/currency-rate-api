@@ -1,10 +1,9 @@
 package io.spaceurgent.currency.rate.api.service.impl;
 
 import io.spaceurgent.currency.rate.api.client.CurrencyRateApiClient;
-import io.spaceurgent.currency.rate.api.client.dto.CryptoCurrencyRateInfo;
+import io.spaceurgent.currency.rate.api.client.dto.CryptoRateInfo;
 import io.spaceurgent.currency.rate.api.dao.CurrencyRateDao;
 import io.spaceurgent.currency.rate.api.model.CryptoRate;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +37,7 @@ class CryptoRateServiceTest {
 
     @Test
     void getLatestRates_shouldSaveAndReturnNew_whenApiReturnsRateInfo() {
-        final var btcRateInfo = new CryptoCurrencyRateInfo(BTC_CURRENCY_NAME, BTC_CURRENCY_VALUE);
+        final var btcRateInfo = new CryptoRateInfo(BTC_CURRENCY_NAME, BTC_CURRENCY_VALUE);
         doReturn(Flux.just(btcRateInfo)).when(currencyRateApiClient).fetchCryptoCurrencyRates();
         doReturn(Flux.empty()).when(cryptoRateDao).findLastUniqueCurrencyRates();
         doAnswer(invoc -> Mono.just(invoc.getArgument(0))).when(cryptoRateDao).save(any());

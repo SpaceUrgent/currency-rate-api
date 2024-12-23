@@ -1,11 +1,11 @@
 package io.spaceurgent.currency.rate.api.client;
 
-import io.spaceurgent.currency.rate.api.client.dto.CryptoCurrencyRateInfo;
-import io.spaceurgent.currency.rate.api.client.dto.FiatCurrencyRateInfo;
+import io.spaceurgent.currency.rate.api.client.dto.CryptoRateInfo;
+import io.spaceurgent.currency.rate.api.client.dto.FiatRateInfo;
 import reactor.core.publisher.Flux;
 
 public interface CurrencyRateApiClient {
-    Flux<FiatCurrencyRateInfo> fetchFiatCurrencyRates();
+    Flux<FiatRateInfo> fetchFiatCurrencyRates();
 
-    Flux<CryptoCurrencyRateInfo> fetchCryptoCurrencyRates();
+    Flux<CryptoRateInfo> fetchCryptoCurrencyRates();
 }

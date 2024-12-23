@@ -1,7 +1,7 @@
 package io.spaceurgent.currency.rate.api.service.impl;
 
 import io.spaceurgent.currency.rate.api.client.CurrencyRateApiClient;
-import io.spaceurgent.currency.rate.api.client.dto.FiatCurrencyRateInfo;
+import io.spaceurgent.currency.rate.api.client.dto.FiatRateInfo;
 import io.spaceurgent.currency.rate.api.dao.CurrencyRateDao;
 import io.spaceurgent.currency.rate.api.model.FiatRate;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class FiatRateServiceTest {
 
     @Test
     void getLatestRates_shouldSaveAndReturnNew_whenApiReturnsRateInfo() {
-        final var usdRateInfo = new FiatCurrencyRateInfo(USD_CURRENCY_NAME, USD_CURRENCY_RATE);
+        final var usdRateInfo = new FiatRateInfo(USD_CURRENCY_NAME, USD_CURRENCY_RATE);
         doReturn(Flux.just(usdRateInfo)).when(currencyRateApiClient).fetchFiatCurrencyRates();
         doReturn(Flux.empty()).when(fiatRateDao).findLastUniqueCurrencyRates();
         doAnswer(invoc -> Mono.just(invoc.getArgument(0))).when(fiatRateDao).save(any());
