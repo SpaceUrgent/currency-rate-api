@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -18,17 +19,17 @@ public class CryptoRateDaoImpl implements CurrencyRateDao<CryptoRate> {
     private final DatabaseClient databaseClient;
 
     @Override
-    public Flux<CryptoRate> saveAll(Flux<CryptoRate> rates) {
+    public Mono<CryptoRate> save(CryptoRate cryptoRate) {
         String sql = """
                 INSERT INTO crypto_rate (name, value)\s
                 VALUES (:name, :value)\s
                 RETURNING *;
                 """;
-        return rates.flatMap(rate -> databaseClient.sql(sql)
-                .bind("name", rate.getName())
-                .bind("value", rate.getValue())
+        return databaseClient.sql(sql)
+                .bind("name", cryptoRate.getName())
+                .bind("value", cryptoRate.getValue())
                 .map(rowToModelFunction())
-                .one());
+                .one();
     }
 
     @Override

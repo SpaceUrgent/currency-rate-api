@@ -55,23 +55,13 @@ class CryptoRateDaoImplTest {
 
     @Test
     void saveAll_shouldReturnSaved() {
-        final var btcRate = CryptoRate.builder()
+        final var givenRate = CryptoRate.builder()
                 .name("BTC")
                 .value(BigDecimal.valueOf(12345.67))
                 .build();
-        final var ethRate = CryptoRate.builder()
-                .name("ETH")
-                .value(BigDecimal.valueOf(234.56))
-                .build();
-        final var givenFiatRates = Flux.just(btcRate, ethRate);
-        final var saved = cryptoRateDao.saveAll(givenFiatRates)
-                .sort(Comparator.comparing(CryptoRate::getName))
-                .collectList()
-                .block();
+        final var saved = cryptoRateDao.save(givenRate).block();
         assertNotNull(saved);
-        assertEquals(2, saved.size());
-        assertSavedMatchesGiven(btcRate, saved.get(0));
-        assertSavedMatchesGiven(ethRate, saved.get(1));
+        assertSavedMatchesGiven(givenRate, saved);
     }
 
     @Test

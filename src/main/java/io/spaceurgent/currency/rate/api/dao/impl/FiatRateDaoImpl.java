@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -18,17 +19,17 @@ public class FiatRateDaoImpl implements CurrencyRateDao<FiatRate> {
     private final DatabaseClient databaseClient;
 
     @Override
-    public Flux<FiatRate> saveAll(Flux<FiatRate> rates) {
+    public Mono<FiatRate> save(FiatRate currencyRate) {
         String sql = """
                 INSERT INTO fiat_rate (currency, rate)\s
                 VALUES (:currency, :rate)\s
                 RETURNING *;
                 """;
-        return rates.flatMap(rate -> databaseClient.sql(sql)
-                .bind("currency", rate.getCurrency())
-                .bind("rate", rate.getRate())
+        return databaseClient.sql(sql)
+                .bind("currency", currencyRate.getCurrency())
+                .bind("rate", currencyRate.getRate())
                 .map(rowToModelFunction())
-                .one());
+                .one();
     }
 
     public Flux<FiatRate> findAll() {

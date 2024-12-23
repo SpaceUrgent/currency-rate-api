@@ -14,7 +14,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -55,23 +54,13 @@ class FiatRateRepositoryTest {
 
     @Test
     void saveAll_shouldReturnSaved() {
-        final var usdRate = FiatRate.builder()
+        final var givenRate = FiatRate.builder()
                 .currency("USD")
                 .rate(BigDecimal.valueOf(43.23))
                 .build();
-        final var eurRate = FiatRate.builder()
-                .currency("EUR")
-                .rate(BigDecimal.valueOf(53.28))
-                .build();
-        final var givenFiatRates = Flux.just(usdRate, eurRate);
-        final var saved = fiatRateDao.saveAll(givenFiatRates)
-                .sort(Comparator.comparing(FiatRate::getCurrency))
-                .collectList()
-                .block();
+        final var saved = fiatRateDao.save(givenRate).block();
         assertNotNull(saved);
-        assertEquals(2, saved.size());
-        assertSavedMatchesGiven(eurRate, saved.get(0));
-        assertSavedMatchesGiven(usdRate, saved.get(1));
+        assertSavedMatchesGiven(givenRate, saved);
     }
 
     @Test
