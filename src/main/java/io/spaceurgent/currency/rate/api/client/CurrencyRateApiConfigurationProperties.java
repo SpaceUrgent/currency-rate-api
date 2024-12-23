@@ -5,7 +5,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-//@Data
+@Data
 @Validated
 @ConfigurationProperties(prefix = "currency-rate-api")
 public class CurrencyRateApiConfigurationProperties {
@@ -13,12 +13,4 @@ public class CurrencyRateApiConfigurationProperties {
     private String baseUrl;
     @NotNull
     private String secretKey;
-
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    public String getSecretKey() {
-        return secretKey;
-    }
 }
