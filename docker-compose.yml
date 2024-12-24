@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  currency-rate-app:
+    container_name: currency-rate-app
+    build:
+      context: .
+    image: currency-rate-app:latest
+    environment:
+      DB_URL: r2dbc:postgresql://postgres:5432/currency_rate_db
+      DB_USERNAME: user
+      DB_PASSWORD: password
+      CURRENCY_RATE_API_BASE_URL: http://mock-currencies:8080
+      CURRENCY_RATE_API_SECRET_KEY: secret-key
+#    volumes:
+#      - C:/Users/Andrey/logs:/logs
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    depends_on:
+      postgres:
+        condition: service_started
+      mock-currencies:
+        condition: service_started
+
+  mock-currencies:
+    container_name: mock-currencies-api
+    build:
+      context: /mock-currencies
+    ports:
+      - "8081:8080"
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: currency_rate_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
