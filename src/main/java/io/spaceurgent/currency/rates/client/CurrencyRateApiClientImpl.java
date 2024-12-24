@@ -3,6 +3,8 @@ package io.spaceurgent.currency.rates.client;
 import io.spaceurgent.currency.rates.client.dto.CryptoRateInfo;
 import io.spaceurgent.currency.rates.client.dto.FiatRateInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -33,6 +35,9 @@ public class CurrencyRateApiClientImpl implements CurrencyRateApiClient {
         return webClient.get().uri(uri)
                 .retrieve()
                 .bodyToFlux(returnClass)
+                .switchIfEmpty(s -> {
+                    log.warn("GET {} returned empty rate list", uri);
+                })
                 .onErrorResume(WebClientResponseException.class, exception -> {
                     log.error("Error calling GET '{}'. Response status '{}', response body: {}",
                             uri, exception.getStatusCode(), exception.getResponseBodyAsString(), exception);
