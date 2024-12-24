@@ -33,4 +33,5 @@ build/
 .vscode/
 
 ### Spring ###
-*/application-local.yml
+**/application-local.yml
+logs
