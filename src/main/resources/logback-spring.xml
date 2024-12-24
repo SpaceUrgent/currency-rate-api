@@ -12,6 +12,9 @@
         <encoder>
             <pattern>${APP_NAME} | %d{yyyy-MM-dd'T'HH:mm:ss.SSS} | [%thread] | %-5level | %logger{36} - %msg%n</pattern>
         </encoder>
+<!--        For testing  -->
+        <immediateFlush>true</immediateFlush>
+
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>logs/${APP_NAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
