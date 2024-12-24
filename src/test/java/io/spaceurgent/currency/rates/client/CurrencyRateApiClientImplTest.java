@@ -9,9 +9,15 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClient;
@@ -24,9 +30,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import static io.spaceurgent.currency.rates.client.CurrencyRateApiConstants.API_KEY_HEADER_NAME;
+import static io.spaceurgent.currency.rates.dao.DaoTestUtils.convertJdbcToR2dbcUrl;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ContextConfiguration(classes = CurrencyRateApiConfiguration.class)
 class CurrencyRateApiClientImplTest {
     private final static String MOCK_API_KEY = "test-key";
     private final static String FIAT_CURRENCY_RATE_URI = "/fiat-currency-rates";
@@ -48,7 +57,14 @@ class CurrencyRateApiClientImplTest {
 
     private static MockWebServer mockWebServer;
 
+    @Autowired
     private CurrencyRateApiClient currencyRateApiClient;
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("currency-rate-api.base-url", () -> "http://localhost:" + mockWebServer.getPort());
+        registry.add("currency-rate-api.secret-key", () -> MOCK_API_KEY);
+    }
 
     @BeforeAll
     static void beforeAll() throws IOException {
