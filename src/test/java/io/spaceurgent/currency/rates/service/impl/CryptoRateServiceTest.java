@@ -1,7 +1,6 @@
 package io.spaceurgent.currency.rates.service.impl;
 
-import io.spaceurgent.currency.rates.client.CurrencyRateApiClient;
-import io.spaceurgent.currency.rates.client.dto.CryptoRateInfo;
+import io.spaceurgent.currency.rates.client.CurrencyRateClient;
 import io.spaceurgent.currency.rates.dao.CurrencyRateDao;
 import io.spaceurgent.currency.rates.model.CryptoRate;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -25,37 +23,31 @@ import static org.mockito.Mockito.doReturn;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class CryptoRateServiceTest {
-    private static final String BTC_CURRENCY_NAME = "BTC";
-    private static final BigDecimal BTC_CURRENCY_VALUE = BigDecimal.valueOf(12345.67);
+    private static final CryptoRate DEFAULT_CRYPTO_RATE = CryptoRate.builder()
+            .name("BTC")
+            .value(BigDecimal.valueOf(12345.67))
+            .build();
 
     @Mock
     private CurrencyRateDao<CryptoRate> cryptoRateDao;
     @Mock
-    private CurrencyRateApiClient currencyRateApiClient;
+    private CurrencyRateClient<CryptoRate> cryptoRateClient;
     @InjectMocks
     private CryptoRateService cryptoRateService;
 
     @Test
     void getLatestRates_shouldSaveAndReturnNew_whenApiReturnsRateInfo() {
-        final var btcRateInfo = new CryptoRateInfo(BTC_CURRENCY_NAME, BTC_CURRENCY_VALUE);
-        doReturn(Flux.just(btcRateInfo)).when(currencyRateApiClient).fetchCryptoCurrencyRates();
+        doReturn(Flux.just(DEFAULT_CRYPTO_RATE)).when(cryptoRateClient).fetchRates();
         doReturn(Flux.empty()).when(cryptoRateDao).findLastUniqueCurrencyRates();
         doAnswer(invoc -> Mono.just(invoc.getArgument(0))).when(cryptoRateDao).save(any());
-        final var cryptoRate = cryptoRateService.getLatestRates().blockFirst();
-        assertNotNull(cryptoRate);
-        assertEquals(btcRateInfo.name(), cryptoRate.getName());
-        assertEquals(btcRateInfo.value(), cryptoRate.getValue());
+        assertEquals(DEFAULT_CRYPTO_RATE, cryptoRateService.getLatestRates().blockFirst());
     }
 
     @Test
     void getLatestRates_shouldReturnExisting_whenApiReturnsEmpty() {
-        final var btcRate = CryptoRate.builder()
-                .name(BTC_CURRENCY_NAME)
-                .value(BTC_CURRENCY_VALUE)
-                .build();
-        doReturn(Flux.empty()).when(currencyRateApiClient).fetchCryptoCurrencyRates();
-        doReturn(Flux.just(btcRate)).when(cryptoRateDao).findLastUniqueCurrencyRates();
+        doReturn(Flux.empty()).when(cryptoRateClient).fetchRates();
+        doReturn(Flux.just(DEFAULT_CRYPTO_RATE)).when(cryptoRateDao).findLastUniqueCurrencyRates();
         doAnswer(invoc -> Mono.just(invoc.getArgument(0))).when(cryptoRateDao).save(any());
-        assertEquals(btcRate, cryptoRateService.getLatestRates().blockFirst());
+        assertEquals(DEFAULT_CRYPTO_RATE, cryptoRateService.getLatestRates().blockFirst());
     }
 }
