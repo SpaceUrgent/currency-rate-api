@@ -19,4 +19,12 @@ public class CurrencyRateApiConfiguration {
                 .build();
         return new CurrencyRateApiClientImpl(webClient);
     }
+
+    @Bean("currencyApiWebClient")
+    public WebClient webClient(final CurrencyRateApiConfigurationProperties properties) {
+        return WebClient.builder()
+                .baseUrl(properties.getBaseUrl())
+                .defaultHeader(API_KEY_HEADER_NAME, properties.getSecretKey())
+                .build();
+    }
 }
